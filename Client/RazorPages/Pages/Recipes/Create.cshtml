@@ -1,0 +1,57 @@
+﻿@page
+@model RazorPages.Pages.Recipes.CreateModel
+@if (@Model.Msg != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    if (@Model.Status == "error")
+    {
+        <script tymargin"text /javascript">
+            Swal.fire({
+                icon: 'error',
+                title: '@Model.Msg',
+                showConfirmButton: true,
+            })
+        </script>
+    }
+}
+@{
+    <br />
+    <body style="background-color:#252f3e;">
+    </body>
+    <form method="post" class="align-content-center col-6" style="margin:auto;text-align:center;margin-top:50px;color:#66FCF1">
+        <div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left" asp-for="Recipe.Title" ></label>
+                <input asp-for="Recipe.Title" class="form-control">
+                <span asp-validation-for="Recipe.Title" class="text-danger"></span>
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left" asp-for="Recipe.Ingredients"></label>
+                <textarea name="Recipe.Ingredients" placeholder="After every ingredient press enter for new line." rows="5" cols="30"></textarea>
+                <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span>
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left" asp-for="Recipe.Instructions" ></label>
+                <textarea name="Recipe.Instructions" placeholder="After every instructions press enter for new line." rows="5" cols="30"></textarea>
+                <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <form method="post">
+                    <label style="text-align:left" asp-for="Recipe.Categories">Choose one or more category</label>
+                    <br>
+                    <select name="Recipe.Categories" id="cars" multiple style="color:black">
+                        @foreach (var obj in Model.Categories)
+                        {
+                            <option value=@obj>@obj</option>
+                        }
+                    </select>
+                    <p style="font-weight:bold">Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
+                    <span asp-validation-for="Recipe.Categories" class="text-danger"></span>
+                </form>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="bi bi-plus-circle-fill" style="font-style:normal"> Create</i></button>
+            <br><br>
+        </div>
+    </form>
+
+}

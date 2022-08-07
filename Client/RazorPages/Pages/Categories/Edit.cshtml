@@ -1,0 +1,14 @@
+﻿@page
+@model RazorPages.Pages.Categories.EditModel
+@{
+    <form method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#1A2238">
+        <div class="text-center" style="margin-top:25%;margin-right:50px;">
+            <div class="mt-4">
+                <input asp-for=Category>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <br> <br>
+            <button type="submit" class="btn btn-success" ><i class="bi bi-check" style="font-style:normal"> Edit</i></button>
+        </div>
+    </form>
+}

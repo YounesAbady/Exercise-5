@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option csharp_namespace = "Server.Protos";
+
+package recipe;
+
+service recipe{
+	//rpc GetAllRecipes(GetAllRecipesRequest) returns (AllRecipes);
+	rpc CreateRecipe(CreateRecipeRequest) returns (RecipeResponse);
+	//rpc DeleteRecipe(DeleteRecipeRequest) returns (RecipeResponse);
+	//rpc EditRecipe(EditRecipeRequest) returns (RecipeResponse);
+	//rpc GetRecipe(GetRecipeRequest) returns (Recipe);
+}
+
+message Ingredient{
+	string Ingredient=1;
+}
+message Instruction{
+	string Instruction=1;
+}
+message Recipe{
+	string Id=1;
+	string Title=2;
+	repeated Ingredient Ingredients=3;
+	repeated Instruction Instructions=4;
+	//repeated Category Categories=5;
+}
+message CreateRecipeRequest{
+	string Id=1;
+	string Title=2;
+	repeated Ingredient Ingredients=3;
+	repeated Instruction Instructions=4;
+	//repeated Category Categories=5;
+}
+message RecipeResponse{
+
+}

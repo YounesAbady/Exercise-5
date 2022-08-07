@@ -1,0 +1,76 @@
+﻿@page
+@model RazorPages.Pages.Recipes.EditModel
+@if (@Model.Msg != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    if (@Model.Status == "error")
+    {
+        <script type="text/javascript">
+            Swal.fire({
+                icon: 'error',
+                title: '@Model.Msg',
+                showConfirmButton: true,
+            })
+        </script>
+    }
+}
+@{
+    <form method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#66FCF1">
+        <div>
+            <label asp-for="Recipe.Id" hidden></label>
+            <input asp-for="Recipe.Id" hidden>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left;font-size:large" asp-for="Recipe.Title"></label>
+                <input asp-for="Recipe.Title">
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left;font-size:large" asp-for="Recipe.Ingredients"></label>
+                <textarea name="Recipe.Ingredients" placeholder="After every ingredient press enter for new line." rows="4" cols="30">@foreach (var obj in Model.Recipe.Ingredients)
+                    {
+                        if (obj != Model.Recipe.Ingredients.Last())
+                            @obj.Insert(obj.Length,"\r\n")
+                        else
+                            @obj
+                    }</textarea>
+                <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span>
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left;font-size:large" asp-for="Recipe.Instructions"></label>
+                <textarea name="Recipe.Instructions" placeholder="After every instructions press enter for new line." rows="4" cols="30">@foreach (var obj in Model.Recipe.Instructions)
+                    {
+                        if (obj != Model.Recipe.Instructions.Last())
+                            @obj.Insert(obj.Length,"\r\n")
+                        else
+                            @obj
+                    }</textarea>
+                <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+            </div>
+            <div class="mt-4 text-light" style="font-size:medium">
+                Old Categories:
+                @foreach (var obj in @Model.Recipe.Categories)
+                {
+                    if (obj != @Model.Recipe.Categories.Last())
+                        @obj.Insert(obj.Length," - ")
+                    else
+                        @obj
+                }
+                <br>
+                <span class="text-danger" style="font-size:large">All old categories will be deleted!<br> Please select new ones.</span>
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <form method="post">
+                    <label style="text-align:left;font-size:large" asp-for="Recipe.Categories">Choose one or more category</label>
+                    <br>
+                    <select name="Recipe.Categories" id="cars" multiple style="color:black">
+                        @foreach (var obj in Model.Categories)
+                        {
+                            <option value=@obj>@obj</option>
+                        }
+                    </select>
+                    <p style="font-weight:bold">Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
+                </form>
+            </div>
+            <button type="submit" class="btn btn-success"><i class="bi bi-pencil-square" style="font-style:normal"> Edit</i></button>
+        </div>
+    </form>
+}

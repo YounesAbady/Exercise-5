@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] Yum City</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/RazorPages.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/StyleSheet.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Wendy+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg" style="height:60px;">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarColor03">
+                    <ul class="navbar-nav me-auto">
+                        <li style="margin-top:30px;">
+                            <div class="logo-holder logo-5">
+                                <a class="nav-link text-light" asp-page="/Home">
+                                    <h3>Yum</h3>
+                                    <p>City</p>
+                                </a>
+                            </div>
+                        <li class="nav-item" style="margin-left:1050px;margin-top:25px;">
+                            <a class="nav-link text-light" style="font-size:x-large;" asp-area="" asp-page="/Categories/ListCategories">Categories</a>
+                        </li>
+                        <li class="nav-item" style="margin-left:50px;margin-top:25px;">
+                            <a class="nav-link text-light" style="font-size:x-large;" asp-area="" asp-page="/Recipes/ListRecipes">Recipes</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <body class="bg"
+                  style="background-image:url('../bg.jpg') ;
+                            height: 100vh">
+            </body>
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+@*    <script src="~/js/BackGroundChanger.js"></script>
+*@    <script src="sweetalert2.all.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

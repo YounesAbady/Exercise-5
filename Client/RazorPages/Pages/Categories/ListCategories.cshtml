@@ -1,0 +1,54 @@
+﻿@page
+@if (@Model.Msg != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    if (@Model.Status == "success")
+    {
+        <script type="text/javascript">
+            Swal.fire({
+                icon: 'success',
+                title: '@Model.Msg',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        </script>
+    }
+    else if (@Model.Status == "error")
+    {
+        <script type="text/javascript">
+            Swal.fire({
+                icon: 'error',
+                title: '@Model.Msg',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        </script>
+    }
+}
+@model RazorPages.Pages.Categories.ListCategoriesModel
+@{
+
+    int i = 1;
+    <div class="row row-cols-1 row-cols-md-4 g-2 text-center">
+        @foreach (var item in @Model.Categories)
+        {
+            <div class="col">
+                <div class="card h-100 text-center" style="border:groove;border-color:#66FCF1;background-color:transparent;margin-left:2px;margin-top:5px;margin-right:50px;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item</h5>
+                        <a asp-page="Edit" asp-route-category="@item" asp-route-postion="@i" class="btn btn-dark" style="background-color:#1F2833;color:white;margin-top:10px;">
+                            <i class="bi bi-pencil-square" style="font-style:normal"> Edit</i>
+                        </a>
+                        <a asp-page="Delete" asp-route-category="@item" class="btn btn-danger" style="color:white;margin-top:10px;">
+                            <i class="bi bi-trash" style="font-style:normal"> Delete</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            i++;
+        }
+    </div>
+    <div class="text-center">
+        <a asp-page="Create" style="background-color:#252f3e;color:white;margin-top:50px;" class="btn text-center"><i class="bi bi-plus-square" style="font-style:normal"> Create new category</i></a>
+    </div>
+}

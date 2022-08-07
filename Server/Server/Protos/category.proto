@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option csharp_namespace = "Server.Protos";
+
+package category;
+
+service category{
+	rpc GetAllCategories(GetAllCategoriesRequest) returns (AllCategories);
+	rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse);
+	rpc DeleteCategory(DeleteCategoryRequest) returns (CategoryResponse);
+	rpc EditCategory(EditCategoryRequest) returns (CategoryResponse);
+}
+message Category{
+	string Title=1;
+}
+message GetAllCategoriesRequest{
+
+}
+message AllCategories{
+	repeated Category Categories =1;
+}
+message CreateCategoryRequest{
+	string Title=1;
+}
+message CategoryResponse{
+	
+}
+message DeleteCategoryRequest{
+	string Title=1;
+}
+message EditCategoryRequest{
+	int32 Position =1;
+	string NewTitle=2;
+}

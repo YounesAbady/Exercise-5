@@ -1,0 +1,77 @@
+﻿@page
+@if (@Model.Msg != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    if (@Model.Status == "success")
+    {
+        <script type="text/javascript">
+            Swal.fire({
+                icon: 'success',
+                title: '@Model.Msg',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        </script>
+    }
+}
+@model RazorPages.Pages.Recipes.ListRecipesModel
+@{
+    <div class="row row-cols-1 row-cols-md-4 g-2 text-center">
+        @foreach (var recipe in @Model.Recipes)
+        {
+            <div class="col">
+                <div class="card h-100 text-center" style="background-color:transparent;margin-left:2px;margin-top:5px;margin-right:50px;border:groove;border-color:#66FCF1;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color:white">@recipe.Title</h5>
+                        <button style="background-color:#45A29E;color:black;margin-top:10px;font-style:normal" class="text-center" type="button" data-bs-toggle="collapse" data-bs-target=@("#"+"ing"+recipe.Id) aria-expanded="false" aria-controls=@("ing"+recipe.Id)>
+                            <i class="bi bi-search fst-normal" style="font-style:normal"> Show Ingredients</i>
+                        </button>
+                        <div class="collapse text-start" id=@("ing"+recipe.Id) style="color:white">
+                            <ul>
+                                @foreach (var ing in @recipe.Ingredients)
+                                {
+                                    <li class="card-text">@ing</li>
+                                }
+                            </ul>
+                        </div>
+                        <br>
+                        <button style="background-color:#45A29E;color:black;margin-top:10px;font-style:normal" class="text-center" type="button" data-bs-toggle="collapse" data-bs-target=@("#"+"ins"+recipe.Id) aria-expanded="false" aria-controls=@("ins"+recipe.Id)>
+                            <i class="bi bi-search fst-normal" style="font-style:normal"> Show Instructions</i>
+                        </button>
+                        <div class="collapse text-start" id=@("ins"+recipe.Id) style="color:white">
+                            <ul>
+                                @foreach (var ins in @recipe.Instructions)
+                                {
+                                    <li class="card-text">@ins</li>
+                                }
+                            </ul>
+                        </div>
+                        <br>
+                        <button style="background-color:#45A29E;color:black;margin-top:10px;font-style:normal" class="text-center" type="button" data-bs-toggle="collapse" data-bs-target=@("#"+"cat"+recipe.Id) aria-expanded="false" aria-controls=@("cat"+recipe.Id)>
+                            <i class="bi bi-search fst-normal" style="font-style:normal"> Show Categories</i>
+                        </button>
+                        <div class="collapse text-start" id=@("cat"+recipe.Id) style="color:white">
+                            <ul>
+                                @foreach (var cat in @recipe.Categories)
+                                {
+                                    <li class="card-text">@cat</li>
+                                }
+                            </ul>
+                        </div>
+                        <br>
+                        <a asp-page="Edit" asp-route-id="@recipe.Id" class="btn btn-dark" style="background-color:#1F2833;color:white;margin-top:10px;font-style:normal">
+                            <i class="bi bi-pencil-square" style="font-style:normal"> Edit</i>
+                        </a>
+                        <a asp-page="Delete" asp-route-id="@recipe.Id" class="btn btn-danger" style="color:white;margin-top:10px;font-style:normal">
+                            <i class="bi bi-trash" style="font-style:normal"> Delete</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="text-center mt-3">
+        <a asp-page="Create" style="background-color:#252f3e;color:white;margin-top:50px;" class="btn text-center"><i class="bi bi-plus-square" style="font-style:normal"> Create new recipe</i></a>
+    </div>
+}
+
