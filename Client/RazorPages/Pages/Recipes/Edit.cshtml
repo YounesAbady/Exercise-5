@@ -36,7 +36,7 @@
             </div>
             <div class="row mt-4 col-11 m-auto">
                 <label style="text-align:left;font-size:large" asp-for="Recipe.Instructions"></label>
-                <textarea name="Recipe.Instructions" placeholder="After every instructions press enter for new line." rows="4" cols="30">@foreach (var obj in Model.Recipe.Instructions)
+                <textarea style="overflow:hidden" name="Recipe.Instructions" placeholder="After every instructions press enter for new line." rows="4" cols="30">@foreach (var obj in Model.Recipe.Instructions)
                     {
                         if (obj != Model.Recipe.Instructions.Last())
                             @obj.Insert(obj.Length,"\r\n")
@@ -45,18 +45,6 @@
                     }</textarea>
                 <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
             </div>
-            <div class="mt-4 text-light" style="font-size:medium">
-                Old Categories:
-                @foreach (var obj in @Model.Recipe.Categories)
-                {
-                    if (obj != @Model.Recipe.Categories.Last())
-                        @obj.Insert(obj.Length," - ")
-                    else
-                        @obj
-                }
-                <br>
-                <span class="text-danger" style="font-size:large">All old categories will be deleted!<br> Please select new ones.</span>
-            </div>
             <div class="row mt-4 col-11 m-auto">
                 <form method="post">
                     <label style="text-align:left;font-size:large" asp-for="Recipe.Categories">Choose one or more category</label>
@@ -64,7 +52,14 @@
                     <select name="Recipe.Categories" id="cars" multiple style="color:black">
                         @foreach (var obj in Model.Categories)
                         {
-                            <option value=@obj>@obj</option>
+                            if (Model.Recipe.Categories.Contains(obj))
+                            {
+                                <option value=@obj selected>@obj</option>
+                            }
+                            else
+                            {
+                                <option value=@obj>@obj</option>
+                            }
                         }
                     </select>
                     <p style="font-weight:bold">Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>

@@ -44,7 +44,6 @@ namespace RazorPages.Pages.Categories
                 Status = "error";
                 return RedirectToPage();
             }
-            return RedirectToPage();
         }
     }
 }

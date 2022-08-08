@@ -25,6 +25,7 @@ namespace Server.Services
         public override Task<CategoryResponse> CreateCategory(CreateCategoryRequest request, ServerCallContext context)
         {
             _categories.Add(new Category() { Title = request.Title });
+            Sort();
             string fileName = PathCombine(Environment.CurrentDirectory, @"\Categories.json");
             string jsonString = JsonSerializer.Serialize(_categories);
             File.WriteAllText(fileName, jsonString);
@@ -34,6 +35,7 @@ namespace Server.Services
         {
             Category category = new Category() { Title = request.Title };
             _categories.Remove(category);
+            Sort();
             //foreach (Recipe recipe in s_recipes)
             //{
             //    if (recipe.Categories.Contains(category))
@@ -58,6 +60,7 @@ namespace Server.Services
             //}
             Category category = new Category() { Title = request.NewTitle };
             _categories[request.Position - 1] = category;
+            Sort();
             string fileName = PathCombine(Environment.CurrentDirectory, @"\Categories.json");
             string jsonString = JsonSerializer.Serialize(_categories);
             File.WriteAllText(fileName, jsonString);
@@ -66,7 +69,7 @@ namespace Server.Services
             //File.WriteAllText(fileName, jsonString);
             return Task.FromResult(new CategoryResponse());
         }
-        public string PathCombine(string path1, string path2)
+        public static string PathCombine(string path1, string path2)
         {
             if (Path.IsPathRooted(path2))
             {
@@ -74,6 +77,25 @@ namespace Server.Services
                 path2 = path2.TrimStart(Path.AltDirectorySeparatorChar);
             }
             return Path.Combine(path1, path2);
+        }
+        public void Sort()
+        {
+            int x = 0;
+            do
+            {
+                x = 0;
+                for (int i = 0; i < _categories.Count - 1; i++)
+                {
+                    if (char.ToUpper(_categories[i].Title[0]) > char.ToUpper(_categories[i + 1].Title[0]))
+                    {
+                        x++;
+                        string tmp = _categories[i].Title;
+                        _categories[i].Title = _categories[i + 1].Title;
+                        _categories[i + 1].Title = tmp;
+                    }
+                }
+
+            } while (x > 0);
         }
     }
 

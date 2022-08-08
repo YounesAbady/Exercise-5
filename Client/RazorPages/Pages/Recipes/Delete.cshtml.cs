@@ -1,5 +1,7 @@
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Server.Protos;
 using System.Text.Json;
 
 namespace RazorPages.Pages.Recipes
@@ -18,11 +20,11 @@ namespace RazorPages.Pages.Recipes
         public Models.Recipe Recipe { get; set; }
         public async Task OnGet(Guid id)
         {
-            var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
-            var client = httpClient.CreateClient();
-            client.BaseAddress = new Uri(config["BaseAddress"]);
-            var request = await client.GetStringAsync($"/api/get-recipe/{id}");
-            if (request != null)
+            Recipe = new();
+            var channel = GrpcChannel.ForAddress("https://localhost:7106");
+            var client = new recipe.recipeClient(channel);
+            var response = await client.GetRecipeAsync(new GetRecipeRequest() { Id = id.ToString() });
+            if (response != null)
             {
                 var options = new JsonSerializerOptions
                 {
@@ -30,21 +32,33 @@ namespace RazorPages.Pages.Recipes
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
                 };
-                Recipe = JsonSerializer.Deserialize<Models.Recipe>(request, options);
+                Recipe.Title = response.Title;
+                Recipe.Id = new Guid(response.Id);
+                foreach (var ingredient in response.Ingredients)
+                {
+                    Recipe.Ingredients.Add(ingredient.Ingredient_);
+                }
+                foreach (var instruction in response.Instructions)
+                {
+                    Recipe.Instructions.Add(instruction.Instruction_);
+                }
+                foreach (var category in response.Categories)
+                {
+                    Recipe.Categories.Add(category.Title);
+                }
             }
         }
         public async Task<IActionResult> OnPost()
         {
-            var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
-            var client = httpClient.CreateClient();
-            client.BaseAddress = new Uri(config["BaseAddress"]);
-            var request = await client.DeleteAsync($"/api/delete-recipe/{Recipe.Id}");
-            if (request.IsSuccessStatusCode)
-            {
-                Msg = "Successfully Deleted!";
-                Status = "success";
-                return RedirectToPage("ListRecipes");
-            }
+            var channel = GrpcChannel.ForAddress("https://localhost:7106");
+            var client = new recipe.recipeClient(channel);
+            var response = await client.DeleteRecipeAsync(new DeleteRecipeRequest() { Id = Recipe.Id.ToString() });
+            //if (request.IsSuccessStatusCode)
+            //{
+            //    Msg = "Successfully Deleted!";
+            //    Status = "success";
+            //    return RedirectToPage("ListRecipes");
+            //}
             return RedirectToPage();
         }
     }

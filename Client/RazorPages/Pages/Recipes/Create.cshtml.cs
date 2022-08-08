@@ -1,9 +1,11 @@
 using FluentValidation;
 using FluentValidation.Results;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPages.Extensions;
+using Server.Protos;
 using System.Text;
 using System.Text.Json;
 
@@ -55,18 +57,37 @@ namespace RazorPages.Pages.Recipes
                 recipe.Ingredients = ing.ToList();
                 var ins = recipe.Instructions[0].Split("\r\n");
                 recipe.Instructions = ins.ToList();
-                var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
-                var client = httpClient.CreateClient();
-                client.BaseAddress = new Uri(config["BaseAddress"]);
-                var jsonRecipe = JsonSerializer.Serialize(recipe);
-                var content = new StringContent(jsonRecipe, Encoding.UTF8, "application/json");
-                var request = await client.PostAsync($"/api/add-recipe/{jsonRecipe}", content);
-                if (request.IsSuccessStatusCode)
+                //var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
+                //var client = httpClient.CreateClient();
+                //client.BaseAddress = new Uri(config["BaseAddress"]);
+                //var jsonRecipe = JsonSerializer.Serialize(recipe);
+                //var content = new StringContent(jsonRecipe, Encoding.UTF8, "application/json");
+                //var request = await client.PostAsync($"/api/add-recipe/{jsonRecipe}", content);
+                //if (request.IsSuccessStatusCode)
+                //{
+                //    Msg = "Successfully Created!";
+                //    Status = "success";
+                //    return RedirectToPage("ListRecipes");
+                //}
+                var channel = GrpcChannel.ForAddress("https://localhost:7106");
+                var client = new recipe.recipeClient(channel);
+                Recipe rec = new();
+                rec.Title = recipe.Title;
+                rec.Id = Guid.NewGuid().ToString();
+                foreach (var ingredient in recipe.Ingredients)
                 {
-                    Msg = "Successfully Created!";
-                    Status = "success";
-                    return RedirectToPage("ListRecipes");
+                    rec.Ingredients.Add(new Ingredient() { Ingredient_ = ingredient });
                 }
+                foreach (var instruction in recipe.Instructions)
+                {
+                    rec.Instructions.Add(new Instruction() { Instruction_ = instruction });
+                }
+                foreach (var category in recipe.Categories)
+                {
+                    rec.Categories.Add(new Category() { Title = category });
+                }
+                var response = await client.CreateRecipeAsync(new CreateRecipeRequest() { Recipe = rec });
+                return RedirectToPage("ListRecipes");
             }
             else
             {

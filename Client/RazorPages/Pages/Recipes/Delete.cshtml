@@ -12,16 +12,12 @@
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire(
-                'Good To go!',
-                'You can delete it now!'
-            )
-            document.getElementById("isWorking").disabled = false;
+           document.getElementById("myFormRecipe").submit();
         }
     })
 </script>
 @{
-    <form method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#66FCF1">
+    <form method="post" id="myFormRecipe" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#66FCF1">
             <div>
                 <div class="row mt-4 col-11 m-auto">
                     <label style="text-align:left;font-size:large" asp-for="Recipe.Title"></label>

@@ -4,12 +4,14 @@ option csharp_namespace = "Server.Protos";
 
 package recipe;
 
+import "Protos/category.proto";
+
 service recipe{
-	//rpc GetAllRecipes(GetAllRecipesRequest) returns (AllRecipes);
+	rpc GetAllRecipes(GetAllRecipesRequest) returns (AllRecipes);
 	rpc CreateRecipe(CreateRecipeRequest) returns (RecipeResponse);
-	//rpc DeleteRecipe(DeleteRecipeRequest) returns (RecipeResponse);
-	//rpc EditRecipe(EditRecipeRequest) returns (RecipeResponse);
-	//rpc GetRecipe(GetRecipeRequest) returns (Recipe);
+	rpc DeleteRecipe(DeleteRecipeRequest) returns (RecipeResponse);
+	rpc EditRecipe(EditRecipeRequest) returns (RecipeResponse);
+	rpc GetRecipe(GetRecipeRequest) returns (Recipe);
 }
 
 message Ingredient{
@@ -23,14 +25,26 @@ message Recipe{
 	string Title=2;
 	repeated Ingredient Ingredients=3;
 	repeated Instruction Instructions=4;
-	//repeated Category Categories=5;
+	repeated category.Category Categories=5;
 }
 message CreateRecipeRequest{
+	Recipe Recipe=1;
+}
+message AllRecipes{
+	repeated Recipe Recipes=1;
+}
+message DeleteRecipeRequest{
 	string Id=1;
-	string Title=2;
-	repeated Ingredient Ingredients=3;
-	repeated Instruction Instructions=4;
-	//repeated Category Categories=5;
+}
+message GetRecipeRequest{
+	string Id=1;
+}
+message EditRecipeRequest{
+	Recipe Recipe=1;
+	string Id=2;
+}
+message GetAllRecipesRequest{
+
 }
 message RecipeResponse{
 

@@ -13,22 +13,22 @@
         if (result.isConfirmed) {
             Swal.fire(
                 'Good To go!',
-                'You can delete it now!'
+                'Deleted!'
             )
-            document.getElementById("isWorking").disabled = false;
+           document.getElementById("myForm").submit();
         }
     })
 </script>
 @model RazorPages.Pages.Categories.DeleteModel
 @{
-    <form method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#1A2238">
-            <div class="text-center" style="margin-top:25%;margin-right:50px;">
-                <div class="mt-4">
-                    <input asp-for="Category" disabled>
-                </div>
-                <br> <br>
-                <button id="isWorking" type="submit" class="btn btn-danger" disabled><i class="bi bi-trash3-fill" style="font-style:normal"> Delete</i></button>
+    <form id="myForm" method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#1A2238">
+        <div class="text-center" style="margin-top:25%;margin-right:50px;">
+            <div class="mt-4">
+                <input asp-for="Category" disabled>
             </div>
+            <br> <br>
+            <button id="isWorking" type="submit" class="btn btn-danger" disabled><i class="bi bi-trash3-fill" style="font-style:normal"> Delete</i></button>
+        </div>
     </form>
 }
-    
+
