@@ -16,10 +16,16 @@
 }
 @model RazorPages.Pages.Categories.CreateModel
 @{
-    <form method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#1A2238">
+    <form method="post" class="align-content-center col-6 needs-validation" style="margin:auto;text-align:center;margin-top:50px;color:#1A2238" novalidate>
         <div class="text-center" style="margin-top:25%;margin-right:50px;">
             <div class="mt-4">
-                <input asp-for="Category" placeholder="Enter category name">
+                <input asp-for="Category" class="form-control text-center m-auto" style="width:200px;" placeholder="Enter category name" required>
+                <div class="valid-feedback" style="font-size:large">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback" style="font-size:large">
+                    Cant be empty.
+                </div>
                 <span asp-validation-for="Category" class="text-danger"></span>
             </div>
             <br><br>

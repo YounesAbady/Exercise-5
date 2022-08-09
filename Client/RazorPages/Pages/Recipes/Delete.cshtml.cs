@@ -26,12 +26,6 @@ namespace RazorPages.Pages.Recipes
             var response = await client.GetRecipeAsync(new GetRecipeRequest() { Id = id.ToString() });
             if (response != null)
             {
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
-                };
                 Recipe.Title = response.Title;
                 Recipe.Id = new Guid(response.Id);
                 foreach (var ingredient in response.Ingredients)
@@ -53,12 +47,12 @@ namespace RazorPages.Pages.Recipes
             var channel = GrpcChannel.ForAddress("https://localhost:7106");
             var client = new recipe.recipeClient(channel);
             var response = await client.DeleteRecipeAsync(new DeleteRecipeRequest() { Id = Recipe.Id.ToString() });
-            //if (request.IsSuccessStatusCode)
-            //{
-            //    Msg = "Successfully Deleted!";
-            //    Status = "success";
-            //    return RedirectToPage("ListRecipes");
-            //}
+            if (response.StatusCode == 200)
+            {
+                Msg = "Successfully Deleted!";
+                Status = "success";
+                return RedirectToPage("ListRecipes");
+            }
             return RedirectToPage();
         }
     }

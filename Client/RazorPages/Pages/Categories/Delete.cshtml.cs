@@ -8,10 +8,6 @@ namespace RazorPages.Pages.Categories
     [BindProperties]
     public class DeleteModel : PageModel
     {
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .AddEnvironmentVariables()
-        .Build();
         [TempData]
         public string Msg { get; set; }
         [TempData]
@@ -26,12 +22,12 @@ namespace RazorPages.Pages.Categories
             var channel = GrpcChannel.ForAddress("https://localhost:7106");
             var client = new category.categoryClient(channel);
             var response = await client.DeleteCategoryAsync(new DeleteCategoryRequest() { Title = Category });
-            //if (request.IsSuccessStatusCode)
-            //{
-            //    Msg = "Successfully Deleted!";
-            //    Status = "success";
-            //    return RedirectToPage("ListCategories");
-            //}
+            if (response.StatusCode == 200)
+            {
+                Msg = "Successfully Deleted!";
+                Status = "success";
+                return RedirectToPage("ListCategories");
+            }
             return RedirectToPage();
         }
     }

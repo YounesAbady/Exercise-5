@@ -1,8 +1,10 @@
 using FluentValidation;
 using FluentValidation.Results;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPages.Extensions;
+using Server.Protos;
 using System.Text;
 using System.Text.Json;
 
@@ -29,25 +31,36 @@ namespace RazorPages.Pages.Recipes
         }
         public async Task OnGet(Guid id)
         {
-            var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
-            var client = httpClient.CreateClient();
-            client.BaseAddress = new Uri(config["BaseAddress"]);
-            var request = await client.GetStringAsync($"/api/get-recipe/{id}");
-            if (request != null)
+            Recipe = new();
+            var channel = GrpcChannel.ForAddress("https://localhost:7106");
+            var client = new recipe.recipeClient(channel);
+            var response = await client.GetRecipeAsync(new GetRecipeRequest() { Id = id.ToString() });
+            if (response != null)
             {
-                var options = new JsonSerializerOptions
+                Recipe.Title = response.Title;
+                Recipe.Id = new Guid(response.Id);
+                foreach (var ingredient in response.Ingredients)
                 {
-                    WriteIndented = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
-                };
-                Recipe = JsonSerializer.Deserialize<Models.Recipe>(request, options);
+                    Recipe.Ingredients.Add(ingredient.Ingredient_);
+                }
+                foreach (var instruction in response.Instructions)
+                {
+                    Recipe.Instructions.Add(instruction.Instruction_);
+                }
+                foreach (var category in response.Categories)
+                {
+                    Recipe.Categories.Add(category.Title);
+                }
             }
-
-            request = await client.GetStringAsync("/api/list-categories");
-            if (request != null)
+            var clientForCategories = new category.categoryClient(channel);
+            var requestForCategories = new GetAllCategoriesRequest();
+            var responseCategories = await clientForCategories.GetAllCategoriesAsync(requestForCategories);
+            if (responseCategories != null)
             {
-                Categories = JsonSerializer.Deserialize<List<string>>(request);
+                foreach (var category in responseCategories.Categories)
+                {
+                    Categories.Add(category.Title);
+                }
             }
         }
         public async Task<IActionResult> OnPost(Models.Recipe recipe, Guid id)
@@ -62,18 +75,31 @@ namespace RazorPages.Pages.Recipes
                 recipe.Ingredients = ing.ToList();
                 var ins = recipe.Instructions[0].Split("\r\n");
                 recipe.Instructions = ins.ToList();
-                var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
-                var client = httpClient.CreateClient();
-                client.BaseAddress = new Uri(config["BaseAddress"]);
-                var jsonRecipe = JsonSerializer.Serialize(recipe);
-                var content = new StringContent(jsonRecipe, Encoding.UTF8, "application/json");
-                var request = await client.PutAsync($"/api/update-recipe/{jsonRecipe}/{id}", content);
-                if (request.IsSuccessStatusCode)
+                var channel = GrpcChannel.ForAddress("https://localhost:7106");
+                var client = new recipe.recipeClient(channel);
+                Recipe rec = new();
+                rec.Title = recipe.Title;
+                rec.Id = Guid.NewGuid().ToString();
+                foreach (var ingredient in recipe.Ingredients)
+                {
+                    rec.Ingredients.Add(new Ingredient() { Ingredient_ = ingredient });
+                }
+                foreach (var instruction in recipe.Instructions)
+                {
+                    rec.Instructions.Add(new Instruction() { Instruction_ = instruction });
+                }
+                foreach (var category in recipe.Categories)
+                {
+                    rec.Categories.Add(new Category() { Title = category });
+                }
+                var response = await client.EditRecipeAsync(new EditRecipeRequest() { Recipe = rec, Id = id.ToString() });
+                if (response.StatusCode == 200)
                 {
                     Msg = "Successfully Edited!";
                     Status = "success";
                     return RedirectToPage("ListRecipes");
                 }
+                RedirectToPage();
             }
             else
             {

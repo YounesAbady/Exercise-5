@@ -23,7 +23,7 @@ message CreateCategoryRequest{
 	string Title=1;
 }
 message CategoryResponse{
-	
+	int32 StatusCode=1;
 }
 message DeleteCategoryRequest{
 	string Title=1;

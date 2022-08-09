@@ -47,5 +47,5 @@ message GetAllRecipesRequest{
 
 }
 message RecipeResponse{
-
+	int32 StatusCode=1;
 }

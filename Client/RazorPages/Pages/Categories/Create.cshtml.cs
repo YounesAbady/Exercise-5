@@ -13,10 +13,6 @@ namespace RazorPages.Pages.Categories
     [BindProperties]
     public class CreateModel : PageModel
     {
-        IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .AddEnvironmentVariables()
-        .Build();
         [TempData]
         public string Msg { get; set; }
         [TempData]
@@ -30,13 +26,13 @@ namespace RazorPages.Pages.Categories
                 var channel = GrpcChannel.ForAddress("https://localhost:7106");
                 var client = new category.categoryClient(channel);
                 var response = await client.CreateCategoryAsync(new CreateCategoryRequest() { Title = category });
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    Msg = "Successfully Created!";
-                //    Status = "success";
-                //    return RedirectToPage("ListCategories");
-                //}
-                return RedirectToPage("ListCategories");
+                if (response.StatusCode == 200)
+                {
+                    Msg = "Successfully Created!";
+                    Status = "success";
+                    return RedirectToPage("ListCategories");
+                }
+                return RedirectToPage();
             }
             else
             {

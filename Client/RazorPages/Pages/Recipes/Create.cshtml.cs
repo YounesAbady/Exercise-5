@@ -31,13 +31,16 @@ namespace RazorPages.Pages.Recipes
         }
         public async Task OnGet(Models.Recipe? recipe)
         {
-            var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
-            var client = httpClient.CreateClient();
-            client.BaseAddress = new Uri(config["BaseAddress"]);
-            var request = await client.GetStringAsync("/api/list-categories");
-            if (request != null)
+            var channel = GrpcChannel.ForAddress("https://localhost:7106");
+            var client = new category.categoryClient(channel);
+            var request = new GetAllCategoriesRequest();
+            var response = await client.GetAllCategoriesAsync(request);
+            if (response != null)
             {
-                Categories = JsonSerializer.Deserialize<List<string>>(request);
+                foreach (var category in response.Categories)
+                {
+                    Categories.Add(category.Title);
+                }
             }
             if (recipe != null)
                 Recipe = recipe;
@@ -57,18 +60,6 @@ namespace RazorPages.Pages.Recipes
                 recipe.Ingredients = ing.ToList();
                 var ins = recipe.Instructions[0].Split("\r\n");
                 recipe.Instructions = ins.ToList();
-                //var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
-                //var client = httpClient.CreateClient();
-                //client.BaseAddress = new Uri(config["BaseAddress"]);
-                //var jsonRecipe = JsonSerializer.Serialize(recipe);
-                //var content = new StringContent(jsonRecipe, Encoding.UTF8, "application/json");
-                //var request = await client.PostAsync($"/api/add-recipe/{jsonRecipe}", content);
-                //if (request.IsSuccessStatusCode)
-                //{
-                //    Msg = "Successfully Created!";
-                //    Status = "success";
-                //    return RedirectToPage("ListRecipes");
-                //}
                 var channel = GrpcChannel.ForAddress("https://localhost:7106");
                 var client = new recipe.recipeClient(channel);
                 Recipe rec = new();
@@ -87,7 +78,13 @@ namespace RazorPages.Pages.Recipes
                     rec.Categories.Add(new Category() { Title = category });
                 }
                 var response = await client.CreateRecipeAsync(new CreateRecipeRequest() { Recipe = rec });
-                return RedirectToPage("ListRecipes");
+                if (response.StatusCode == 200)
+                {
+                    Msg = "Successfully Created!";
+                    Status = "success";
+                    return RedirectToPage("ListRecipes");
+                }
+                return RedirectToPage();
             }
             else
             {
@@ -98,7 +95,6 @@ namespace RazorPages.Pages.Recipes
                 Status = "error";
                 return RedirectToPage("Create", recipe);
             }
-            return RedirectToPage();
         }
     }
 }

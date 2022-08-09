@@ -1,70 +1,110 @@
 ﻿using Grpc.Core;
+using Newtonsoft.Json;
+using ProtoBuf;
 using Server.Protos;
+using System.Text;
 using System.Text.Json;
 namespace Server.Services
 {
     public class RecipeService : recipe.recipeBase
     {
-        private List<Category> _categories = new();
-        private List<Recipe> _recipes = new();
+        private List<Category> _categories { get; set; } = new();
+        private List<Recipe> _recipes { get; set; } = new();
         public RecipeService()
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
             string fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
             string jsonString = File.ReadAllText(fileName);
-            _recipes = JsonSerializer.Deserialize<List<Recipe>>(jsonString, options);
+            _recipes = JsonConvert.DeserializeObject<List<Recipe>>(jsonString);
             fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Categories.json");
             jsonString = File.ReadAllText(fileName);
-            _categories = JsonSerializer.Deserialize<List<Category>>(jsonString);
+            _categories = System.Text.Json.JsonSerializer.Deserialize<List<Category>>(jsonString);
         }
         public override Task<RecipeResponse> CreateRecipe(CreateRecipeRequest request, ServerCallContext context)
         {
-            _recipes.Add(request.Recipe);
-            Sort();
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            string fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
-            string jsonString = JsonSerializer.Serialize(_recipes, options);
-            File.WriteAllText(fileName, jsonString);
-            return Task.FromResult(new RecipeResponse());
+            Recipe tmp = new();
+            tmp.Ingredients.Add(request.Recipe.Ingredients.Where(r => !string.IsNullOrWhiteSpace(r.Ingredient_)));
+            tmp.Instructions.Add(request.Recipe.Instructions.Where(r => !string.IsNullOrWhiteSpace(r.Instruction_)));
+            request.Recipe.Ingredients.Clear();
+            request.Recipe.Ingredients.Add(tmp.Ingredients);
+            request.Recipe.Instructions.Clear();
+            request.Recipe.Instructions.Add(tmp.Instructions);
+            if (request.Recipe.Ingredients.Count == 0 || request.Recipe.Instructions.Count == 0 || request.Recipe.Categories.Count == 0 || string.IsNullOrWhiteSpace(request.Recipe.Title))
+                throw new InvalidOperationException("Cant be empty");
+            else
+            {
+                _recipes.Add(request.Recipe);
+                Sort();
+                string fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
+                string jsonString = System.Text.Json.JsonSerializer.Serialize(_recipes);
+                File.WriteAllText(fileName, jsonString);
+                return Task.FromResult(new RecipeResponse() { StatusCode = 200 });
+            }
         }
         public override Task<AllRecipes> GetAllRecipes(GetAllRecipesRequest request, ServerCallContext context)
         {
-            AllRecipes allRecipes = new();
-            foreach (var recipe in _recipes)
+            if (_recipes.Count == 0)
+                throw new InvalidOperationException("Cant be empty");
+            else
             {
-                allRecipes.Recipes.Add(recipe);
+                AllRecipes allRecipes = new();
+                foreach (var recipe in _recipes)
+                {
+                    allRecipes.Recipes.Add(recipe);
+                }
+                return Task.FromResult(allRecipes);
             }
-            return Task.FromResult(allRecipes);
         }
         public override Task<RecipeResponse> DeleteRecipe(DeleteRecipeRequest request, ServerCallContext context)
         {
-            Recipe recipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
-            _recipes.Remove(recipe);
-            string fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
-            var jsonString = JsonSerializer.Serialize(_recipes);
-            File.WriteAllText(fileName, jsonString);
-            return Task.FromResult(new RecipeResponse());
+            if (new Guid(request.Id) == Guid.Empty)
+                throw new InvalidOperationException("Cant be empty");
+            else
+            {
+                Recipe recipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
+                _recipes.Remove(recipe);
+                string fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
+                var jsonString = System.Text.Json.JsonSerializer.Serialize(_recipes);
+                File.WriteAllText(fileName, jsonString);
+                return Task.FromResult(new RecipeResponse() { StatusCode = 200 });
+            }
         }
         public override Task<Recipe> GetRecipe(GetRecipeRequest request, ServerCallContext context)
         {
-            var recipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
-            return Task.FromResult(new Recipe(recipe));
+            if (new Guid(request.Id) == Guid.Empty)
+                throw new InvalidOperationException("Cant be empty");
+            else
+            {
+                var recipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
+                return Task.FromResult(new Recipe(recipe));
+            }
         }
         public override Task<RecipeResponse> EditRecipe(EditRecipeRequest request, ServerCallContext context)
         {
-            Recipe oldRecipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
-            Recipe newRecipe = request.Recipe;
-            oldRecipe.Title = newRecipe.Title;
-            oldRecipe.Categories.Clear();
-            oldRecipe.Categories.Add(newRecipe.Categories);
-            oldRecipe.Ingredients.Clear();
-            oldRecipe.Ingredients.Add(newRecipe.Ingredients);
-            oldRecipe.Instructions.Clear();
-            oldRecipe.Instructions.Add(newRecipe.Instructions);
-            var fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
-            var jsonString = JsonSerializer.Serialize(_recipes);
-            File.WriteAllText(fileName, jsonString);
-            return Task.FromResult(new RecipeResponse());
+            Recipe tmp = new();
+            tmp.Ingredients.Add(request.Recipe.Ingredients.Where(r => !string.IsNullOrWhiteSpace(r.Ingredient_)));
+            tmp.Instructions.Add(request.Recipe.Instructions.Where(r => !string.IsNullOrWhiteSpace(r.Instruction_)));
+            request.Recipe.Ingredients.Clear();
+            request.Recipe.Ingredients.Add(tmp.Ingredients);
+            request.Recipe.Instructions.Clear();
+            request.Recipe.Instructions.Add(tmp.Instructions);
+            if (new Guid(request.Id) == Guid.Empty || string.IsNullOrEmpty(request.Recipe.Title) || request.Recipe.Ingredients.Count == 0 || request.Recipe.Instructions.Count == 0 || request.Recipe.Categories.Count == 0)
+                throw new InvalidOperationException("Cant be empty");
+            else
+            {
+                Recipe oldRecipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
+                Recipe newRecipe = request.Recipe;
+                oldRecipe.Title = newRecipe.Title;
+                oldRecipe.Categories.Clear();
+                oldRecipe.Categories.Add(newRecipe.Categories);
+                oldRecipe.Ingredients.Clear();
+                oldRecipe.Ingredients.Add(newRecipe.Ingredients);
+                oldRecipe.Instructions.Clear();
+                oldRecipe.Instructions.Add(newRecipe.Instructions);
+                var fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
+                var jsonString = System.Text.Json.JsonSerializer.Serialize(_recipes);
+                File.WriteAllText(fileName, jsonString);
+                return Task.FromResult(new RecipeResponse() { StatusCode = 200 });
+            }
         }
         public void Sort()
         {

@@ -15,41 +15,63 @@
     }
 }
 @{
-    <form method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#66FCF1">
+    <form method="post" class="align-content-center col-6 needs-validation" style="margin:auto;text-align:center;margin-top:50px;color:#66FCF1" novalidate>
         <div>
             <label asp-for="Recipe.Id" hidden></label>
             <input asp-for="Recipe.Id" hidden>
             <div class="row mt-4 col-11 m-auto">
                 <label style="text-align:left;font-size:large" asp-for="Recipe.Title"></label>
-                <input asp-for="Recipe.Title">
+                <input asp-for="Recipe.Title" class="form-control" required>
+                <div class="valid-feedback" style="font-size:large">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback" style="font-size:large">
+                    Cant be empty.
+                </div>
             </div>
             <div class="row mt-4 col-11 m-auto">
                 <label style="text-align:left;font-size:large" asp-for="Recipe.Ingredients"></label>
-                <textarea name="Recipe.Ingredients" placeholder="After every ingredient press enter for new line." rows="4" cols="30">@foreach (var obj in Model.Recipe.Ingredients)
+                <textarea name="Recipe.Ingredients" class="form-control resize" placeholder="After every ingredient press enter for new line." rows="4" cols="30" required>
+                    @foreach (var obj in Model.Recipe.Ingredients)
                     {
                         if (obj != Model.Recipe.Ingredients.Last())
                             @obj.Insert(obj.Length,"\r\n")
                         else
                             @obj
-                    }</textarea>
+                    }
+                            </textarea>
+                <div class="valid-feedback" style="font-size:large">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback" style="font-size:large">
+                    Cant be empty.
+                </div>
                 <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span>
             </div>
             <div class="row mt-4 col-11 m-auto">
                 <label style="text-align:left;font-size:large" asp-for="Recipe.Instructions"></label>
-                <textarea style="overflow:hidden" name="Recipe.Instructions" placeholder="After every instructions press enter for new line." rows="4" cols="30">@foreach (var obj in Model.Recipe.Instructions)
+                <textarea style="overflow:hidden" class="form-control resize" name="Recipe.Instructions" placeholder="After every instructions press enter for new line." rows="4" cols="30" required>
+                    @foreach (var obj in Model.Recipe.Instructions)
                     {
                         if (obj != Model.Recipe.Instructions.Last())
                             @obj.Insert(obj.Length,"\r\n")
                         else
                             @obj
-                    }</textarea>
+                    }
+                        </textarea>
+                <div class="valid-feedback" style="font-size:large">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback" style="font-size:large">
+                    Cant be empty.
+                </div>
                 <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
             </div>
             <div class="row mt-4 col-11 m-auto">
                 <form method="post">
                     <label style="text-align:left;font-size:large" asp-for="Recipe.Categories">Choose one or more category</label>
                     <br>
-                    <select name="Recipe.Categories" id="cars" multiple style="color:black">
+                    <select name="Recipe.Categories" class="form-control" id="cars" multiple style="color:black" required>
                         @foreach (var obj in Model.Categories)
                         {
                             if (Model.Recipe.Categories.Contains(obj))
@@ -62,6 +84,12 @@
                             }
                         }
                     </select>
+                    <div class="valid-feedback" style="font-size:large">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback" style="font-size:large">
+                        Cant be empty.
+                    </div>
                     <p style="font-weight:bold">Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
                 </form>
             </div>
