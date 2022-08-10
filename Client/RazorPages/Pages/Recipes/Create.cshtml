@@ -1,19 +1,5 @@
 ﻿@page
 @model RazorPages.Pages.Recipes.CreateModel
-@if (@Model.Msg != null)
-{
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    if (@Model.Status == "error")
-    {
-        <script tymargin"text /javascript">
-            Swal.fire({
-                icon: 'error',
-                title: '@Model.Msg',
-                showConfirmButton: true,
-            })
-        </script>
-    }
-}
 @{
     <br />
     <body style="background-color:#252f3e;">
@@ -77,5 +63,18 @@
             <br><br>
         </div>
     </form>
-
+}
+@if (@Model.Msg != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    if (@Model.Status == "error")
+    {
+        <script tymargin"text /javascript">
+            Swal.fire({
+                icon: 'error',
+                title: '@Model.Msg',
+                showConfirmButton: true,
+            })
+        </script>
+    }
 }

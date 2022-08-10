@@ -8,6 +8,10 @@ namespace RazorPages.Pages.Categories
     [BindProperties]
     public class DeleteModel : PageModel
     {
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .AddEnvironmentVariables()
+        .Build();
         [TempData]
         public string Msg { get; set; }
         [TempData]
@@ -19,7 +23,7 @@ namespace RazorPages.Pages.Categories
         }
         public async Task<IActionResult> OnPost()
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7106");
+            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
             var client = new category.categoryClient(channel);
             var response = await client.DeleteCategoryAsync(new DeleteCategoryRequest() { Title = Category });
             if (response.StatusCode == 200)

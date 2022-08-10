@@ -1,30 +1,4 @@
 ﻿@page
-@if (@Model.Msg != null)
-{
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    if (@Model.Status == "success")
-    {
-        <script type="text/javascript">
-            Swal.fire({
-                icon: 'success',
-                title: '@Model.Msg',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        </script>
-    }
-    else if (@Model.Status == "error")
-    {
-        <script type="text/javascript">
-            Swal.fire({
-                icon: 'error',
-                title: '@Model.Msg',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        </script>
-    }
-}
 @model RazorPages.Pages.Categories.ListCategoriesModel
 @{
 
@@ -51,4 +25,30 @@
     <div class="text-center">
         <a asp-page="Create" style="background-color:#252f3e;color:white;margin-top:50px;" class="btn text-center"><i class="bi bi-plus-square" style="font-style:normal"> Create new category</i></a>
     </div>
+}
+@if (@Model.Msg != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    if (@Model.Status == "success")
+    {
+        <script type="text/javascript">
+            Swal.fire({
+                icon: 'success',
+                title: '@Model.Msg',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        </script>
+    }
+    else if (@Model.Status == "error")
+    {
+        <script type="text/javascript">
+            Swal.fire({
+                icon: 'error',
+                title: '@Model.Msg',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        </script>
+    }
 }

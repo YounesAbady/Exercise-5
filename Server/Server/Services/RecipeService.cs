@@ -62,6 +62,7 @@ namespace Server.Services
             {
                 Recipe recipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
                 _recipes.Remove(recipe);
+                Sort();
                 string fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
                 var jsonString = System.Text.Json.JsonSerializer.Serialize(_recipes);
                 File.WriteAllText(fileName, jsonString);
@@ -100,6 +101,7 @@ namespace Server.Services
                 oldRecipe.Ingredients.Add(newRecipe.Ingredients);
                 oldRecipe.Instructions.Clear();
                 oldRecipe.Instructions.Add(newRecipe.Instructions);
+                Sort();
                 var fileName = CategoryService.PathCombine(Environment.CurrentDirectory, @"\Recipes.json");
                 var jsonString = System.Text.Json.JsonSerializer.Serialize(_recipes);
                 File.WriteAllText(fileName, jsonString);

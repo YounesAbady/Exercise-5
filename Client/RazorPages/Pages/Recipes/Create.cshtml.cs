@@ -31,7 +31,7 @@ namespace RazorPages.Pages.Recipes
         }
         public async Task OnGet(Models.Recipe? recipe)
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7106");
+            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
             var client = new category.categoryClient(channel);
             var request = new GetAllCategoriesRequest();
             var response = await client.GetAllCategoriesAsync(request);
@@ -60,7 +60,7 @@ namespace RazorPages.Pages.Recipes
                 recipe.Ingredients = ing.ToList();
                 var ins = recipe.Instructions[0].Split("\r\n");
                 recipe.Instructions = ins.ToList();
-                var channel = GrpcChannel.ForAddress("https://localhost:7106");
+                var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
                 var client = new recipe.recipeClient(channel);
                 Recipe rec = new();
                 rec.Title = recipe.Title;

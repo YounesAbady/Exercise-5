@@ -10,6 +10,10 @@ namespace RazorPages.Pages.Categories
     [BindProperties]
     public class EditModel : PageModel
     {
+        IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .AddEnvironmentVariables()
+        .Build();
         [TempData]
         public string Msg { get; set; }
         [TempData]
@@ -27,7 +31,7 @@ namespace RazorPages.Pages.Categories
         {
             if (category != null)
             {
-                var channel = GrpcChannel.ForAddress("https://localhost:7106");
+                var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
                 var client = new category.categoryClient(channel);
                 var response = await client.EditCategoryAsync(new EditCategoryRequest() { Position = Position, NewTitle = Category });
                 if (response.StatusCode == 200)

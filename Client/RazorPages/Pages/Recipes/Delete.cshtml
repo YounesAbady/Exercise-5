@@ -1,5 +1,41 @@
 ﻿@page
 @model RazorPages.Pages.Recipes.DeleteModel
+@{
+    <form method="post" id="myFormRecipe" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#66FCF1">
+        <div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left;font-size:large" asp-for="Recipe.Title"></label>
+                <input asp-for="Recipe.Title" disabled>
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left;font-size:large" asp-for="Recipe.Ingredients"></label>
+                @foreach (var obj in @Model.Recipe.Ingredients)
+                {
+                    <input asp-for=@obj disabled>
+                    <br>
+                }
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left;font-size:large" asp-for="Recipe.Instructions"></label>
+                @foreach (var obj in @Model.Recipe.Instructions)
+                {
+                    <input asp-for=@obj disabled>
+                    <br>
+                }
+            </div>
+            <div class="row mt-4 col-11 m-auto">
+                <label style="text-align:left;font-size:large" asp-for="Recipe.Categories">Choose one or more category</label>
+                @foreach (var obj in @Model.Recipe.Categories)
+                {
+                    <input asp-for=@obj disabled>
+                    <br>
+                }
+            </div>
+            <br>
+            <button id="isWorking" type="submit" class="btn btn-danger" disabled><i class="bi bi-trash3-fill" style="font-style:normal"> Delete</i></button>
+        </div>
+    </form>
+}
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     Swal.fire({
@@ -12,43 +48,7 @@
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-           document.getElementById("myFormRecipe").submit();
+            document.getElementById("myFormRecipe").submit();
         }
     })
 </script>
-@{
-    <form method="post" id="myFormRecipe" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#66FCF1">
-            <div>
-                <div class="row mt-4 col-11 m-auto">
-                    <label style="text-align:left;font-size:large" asp-for="Recipe.Title"></label>
-                    <input asp-for="Recipe.Title" disabled>
-                </div>
-                <div class="row mt-4 col-11 m-auto">
-                    <label style="text-align:left;font-size:large" asp-for="Recipe.Ingredients"></label>
-                    @foreach (var obj in @Model.Recipe.Ingredients)
-                {
-                        <input asp-for=@obj disabled>
-                        <br>
-                }
-                </div>
-                <div class="row mt-4 col-11 m-auto">
-                    <label style="text-align:left;font-size:large" asp-for="Recipe.Instructions"></label>
-                    @foreach (var obj in @Model.Recipe.Instructions)
-                {
-                        <input asp-for=@obj disabled>
-                        <br>
-                }
-                </div>
-                <div class="row mt-4 col-11 m-auto">
-                    <label style="text-align:left;font-size:large"  asp-for="Recipe.Categories">Choose one or more category</label>
-                    @foreach (var obj in @Model.Recipe.Categories)
-                {
-                        <input asp-for=@obj disabled>
-                        <br>
-                }
-                </div>
-                <br>
-                <button id="isWorking" type="submit" class="btn btn-danger" disabled><i class="bi bi-trash3-fill" style="font-style:normal"> Delete</i></button>
-            </div>
-    </form>
-}

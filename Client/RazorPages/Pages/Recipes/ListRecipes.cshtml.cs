@@ -19,21 +19,7 @@ namespace RazorPages.Pages.Recipes
         public List<Models.Recipe> Recipes { get; set; } = new();
         public async Task OnGet()
         {
-            //var httpClient = HttpContext.RequestServices.GetService<IHttpClientFactory>();
-            //var client = httpClient.CreateClient();
-            //client.BaseAddress = new Uri(config["BaseAddress"]);
-            //var request = await client.GetStringAsync("/api/list-recipes");
-            //if (request != null)
-            //{
-            //    var options = new JsonSerializerOptions
-            //    {
-            //        WriteIndented = true,
-            //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            //        DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
-            //    };
-            //    Recipes = JsonSerializer.Deserialize<List<Models.Recipe>>(request, options);
-            //}
-            var channel = GrpcChannel.ForAddress("https://localhost:7106");
+            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
             var client = new recipe.recipeClient(channel);
             var request = new GetAllRecipesRequest();
             var response = await client.GetAllRecipesAsync(request);

@@ -1,4 +1,16 @@
 ﻿@page
+@model RazorPages.Pages.Categories.DeleteModel
+@{
+    <form id="myForm" method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#1A2238">
+        <div class="text-center" style="margin-top:25%;margin-right:50px;">
+            <div class="mt-4">
+                <input asp-for="Category" disabled>
+            </div>
+            <br> <br>
+            <button type="submit" class="btn btn-danger" disabled><i class="bi bi-trash3-fill" style="font-style:normal"> Delete</i></button>
+        </div>
+    </form>
+}
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     Swal.fire({
@@ -15,16 +27,4 @@
         }
     })
 </script>
-@model RazorPages.Pages.Categories.DeleteModel
-@{
-    <form id="myForm" method="post" class="align-content-center col-6 " style="margin:auto;text-align:center;margin-top:50px;color:#1A2238">
-        <div class="text-center" style="margin-top:25%;margin-right:50px;">
-            <div class="mt-4">
-                <input asp-for="Category" disabled>
-            </div>
-            <br> <br>
-            <button type="submit" class="btn btn-danger" disabled><i class="bi bi-trash3-fill" style="font-style:normal"> Delete</i></button>
-        </div>
-    </form>
-}
 

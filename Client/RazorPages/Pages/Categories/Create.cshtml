@@ -1,19 +1,4 @@
 ﻿@page
-@if (@Model.Msg != null)
-{
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    if (@Model.Status == "error")
-    {
-        <script type="text/javascript">
-            Swal.fire({
-                icon: 'error',
-                title: '@Model.Msg',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        </script>
-    }
-}
 @model RazorPages.Pages.Categories.CreateModel
 @{
     <form method="post" class="align-content-center col-6 needs-validation" style="margin:auto;text-align:center;margin-top:50px;color:#1A2238" novalidate>
@@ -32,4 +17,19 @@
             <button type="submit" class="btn btn-success text-center"><i class="bi bi-check" style="font-style:normal"> Create</i></button>
         </div>
     </form>
+}
+@if (@Model.Msg != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    if (@Model.Status == "error")
+    {
+        <script type="text/javascript">
+            Swal.fire({
+                icon: 'error',
+                title: '@Model.Msg',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        </script>
+    }
 }
