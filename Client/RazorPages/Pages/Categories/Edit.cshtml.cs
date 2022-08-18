@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text;
 using System.Text.Json;
 using Server.Protos;
+using Grpc.Net.Client.Web;
 
 namespace RazorPages.Pages.Categories
 {
@@ -31,7 +32,10 @@ namespace RazorPages.Pages.Categories
         {
             if (category != null)
             {
-                var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
+                var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]), new GrpcChannelOptions
+                {
+                    HttpHandler = new GrpcWebHandler(new HttpClientHandler())
+                });
                 var client = new category.categoryClient(channel);
                 var response = await client.EditCategoryAsync(new EditCategoryRequest() { Position = Position, NewTitle = Category });
                 if (response.StatusCode == 200)

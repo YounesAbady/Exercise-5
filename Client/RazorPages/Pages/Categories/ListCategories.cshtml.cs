@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Text.Json;
 using Grpc.Net.Client;
 using Server.Protos;
+using Grpc.Net.Client.Web;
 
 namespace RazorPages.Pages.Categories
 {
@@ -20,7 +20,10 @@ namespace RazorPages.Pages.Categories
         public List<string> Categories = new();
         public async Task OnGet()
         {
-            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
+            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]), new GrpcChannelOptions
+            {
+                HttpHandler = new GrpcWebHandler(new HttpClientHandler())
+            });
             var client = new category.categoryClient(channel);
             var request = new GetAllCategoriesRequest();
             var response = await client.GetAllCategoriesAsync(request);

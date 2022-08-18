@@ -1,4 +1,5 @@
 using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Server.Protos;
@@ -23,7 +24,10 @@ namespace RazorPages.Pages.Categories
         }
         public async Task<IActionResult> OnPost()
         {
-            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
+            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]), new GrpcChannelOptions
+            {
+                HttpHandler = new GrpcWebHandler(new HttpClientHandler())
+            });
             var client = new category.categoryClient(channel);
             var response = await client.DeleteCategoryAsync(new DeleteCategoryRequest() { Title = Category });
             if (response.StatusCode == 200)

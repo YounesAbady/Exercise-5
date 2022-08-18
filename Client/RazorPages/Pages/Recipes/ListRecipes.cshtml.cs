@@ -1,4 +1,5 @@
 using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Server.Protos;
@@ -19,7 +20,10 @@ namespace RazorPages.Pages.Recipes
         public List<Models.Recipe> Recipes { get; set; } = new();
         public async Task OnGet()
         {
-            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
+            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]), new GrpcChannelOptions
+            {
+                HttpHandler = new GrpcWebHandler(new HttpClientHandler())
+            });
             var client = new recipe.recipeClient(channel);
             var request = new GetAllRecipesRequest();
             var response = await client.GetAllRecipesAsync(request);

@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPages.Extensions;
@@ -32,7 +33,10 @@ namespace RazorPages.Pages.Recipes
         public async Task OnGet(Guid id)
         {
             Recipe = new();
-            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
+            var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]), new GrpcChannelOptions
+            {
+                HttpHandler = new GrpcWebHandler(new HttpClientHandler())
+            });
             var client = new recipe.recipeClient(channel);
             var response = await client.GetRecipeAsync(new GetRecipeRequest() { Id = id.ToString() });
             if (response != null)
@@ -75,7 +79,10 @@ namespace RazorPages.Pages.Recipes
                 recipe.Ingredients = ing.ToList();
                 var ins = recipe.Instructions[0].Split("\r\n");
                 recipe.Instructions = ins.ToList();
-                var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]));
+                var channel = GrpcChannel.ForAddress(new Uri(config["BaseAddress"]), new GrpcChannelOptions
+                {
+                    HttpHandler = new GrpcWebHandler(new HttpClientHandler())
+                });
                 var client = new recipe.recipeClient(channel);
                 Recipe rec = new();
                 rec.Title = recipe.Title;

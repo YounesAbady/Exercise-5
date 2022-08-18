@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\SIlverKey\Exercise-5\Server\Server\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <History>True|2022-08-11T20:01:00.5301230Z;True|2022-08-11T17:02:54.9969858+02:00;True|2022-08-11T16:54:52.2339678+02:00;True|2022-08-11T16:54:41.1855962+02:00;True|2022-08-11T15:38:04.1043528+02:00;True|2022-08-11T15:32:51.5096303+02:00;True|2022-08-11T13:54:38.0927180+02:00;True|2022-08-11T13:46:25.1980505+02:00;True|2022-08-11T13:33:32.3950363+02:00;True|2022-08-11T12:59:09.9873192+02:00;True|2022-08-11T12:58:03.0953221+02:00;True|2022-08-11T10:35:33.1663234+02:00;True|2022-08-11T10:26:16.7016714+02:00;</History>
+  </PropertyGroup>
+</Project>
